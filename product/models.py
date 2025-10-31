@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.core.validators import MinValueValidator, MaxValueValidator
 
 
 class Category(models.Model):
@@ -30,11 +31,17 @@ class Product(models.Model):
 class Review(models.Model):
     text = models.TextField(verbose_name=_('текст'))
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='reviews', verbose_name=_('товар'))
+    # Рейтинг отзыва от 1 до 5 звёзд
+    stars = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(5)],
+        verbose_name=_('рейтинг'),
+        help_text='Рейтинг от 1 до 5 звёзд',
+        default=5
+    )
 
     class Meta:
         verbose_name = _('Отзыв')
         verbose_name_plural = _('Отзывы')
 
     def __str__(self):
-        return f"{self.text[:50]}"
-
+        return f"{self.text[:50]} ({self.stars}★)"

@@ -2,13 +2,18 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Category, Product, Review
-from .serializers import CategorySerializer, ProductSerializer, ReviewSerializer
+from .serializers import (
+    CategorySerializer, CategoryWithCountSerializer, 
+    ProductSerializer, ProductWithReviewsSerializer, 
+    ReviewSerializer
+)
 
 # Category
 class CategoryListView(APIView):
+    # Возвращает список всех категорий с количеством товаров
     def get(self, request):
         categories = Category.objects.all()
-        serializer = CategorySerializer(categories, many=True)
+        serializer = CategoryWithCountSerializer(categories, many=True)
         return Response(serializer.data)
 
 class CategoryDetailView(APIView):
@@ -35,6 +40,16 @@ class ProductDetailView(APIView):
             return Response({'error': 'Product not found'}, status=status.HTTP_404_NOT_FOUND)
         serializer = ProductSerializer(product)
         return Response(serializer.data)
+
+
+# Новый view для списка товаров с отзывами и рейтингом
+class ProductWithReviewsListView(APIView):
+    # Возвращает список всех товаров с их отзывами и средним рейтингом
+    def get(self, request):
+        products = Product.objects.all()
+        serializer = ProductWithReviewsSerializer(products, many=True)
+        return Response(serializer.data)
+
 
 # Review
 class ReviewListView(APIView):

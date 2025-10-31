@@ -24,11 +24,11 @@ class ProductAdmin(admin.ModelAdmin):
 
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
-	# показывать id, текст и связанный товар
-	list_display = ('id', 'text', 'product')
-	search_fields = ('text',)
-
-
+    # показывать id, текст, рейтинг и связанный товар
+    list_display = ('id', 'text', 'stars', 'product')
+    # фильтр по рейтингу
+    list_filter = ('stars',)
+    search_fields = ('text',)
 # Настройки интерфейса админки на русском
 admin.site.site_header = 'Администрация магазина'
 admin.site.site_title = 'Админка магазина'
